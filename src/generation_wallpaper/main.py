@@ -1,5 +1,5 @@
 import random
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageColor
 from pathlib import Path
 
 
@@ -8,6 +8,13 @@ directions = [
     (-1, 0), # влево
     (0, 1),  # вниз
     (0, -1)  # вверх
+]
+
+PALETTES = [
+    ("#7353FF", "#B36BFF", "#45D9EF"),  # фиолетовый → голубой
+    ("#154D71", "#33A1CC", "#7FFFD4"),  # синий → мятный
+    ("#A73D72", "#EF709D", "#FFD3A5"),  # розовый → персиковый
+    ("#236B58", "#62B885", "#D5E8A0"),  # зелёный → светлый
 ]
 
 
@@ -24,9 +31,21 @@ def generate_walk(steps: int) -> list[tuple[int, int]]:
     return result
 
 
+def lerp_color(
+    start: tuple[int, int, int],
+    end: tuple[int, int, int],
+    t: float,
+) -> tuple[int, int, int]:
+    return tuple(
+        round(a + (b - a) * t)
+        for a, b in zip(start, end)
+    )
+
+
 def generate_wallpaper(output_path: Path):
     steps = random.randint(10000, 30000)
     points = generate_walk(steps)
+    palette = random.choice(PALETTES)
 
     # Границы
     min_x = min(x for x, y in points)
@@ -59,7 +78,28 @@ def generate_wallpaper(output_path: Path):
 
     image = Image.new("RGB", (width, height), color="#151820")
     draw = ImageDraw.Draw(image)
-    draw.line(image_points, fill="#9270ff", width=2)
+
+    colors = [ImageColor.getrgb(color) for color in palette]
+    segment_count = len(image_points) - 1
+
+    for i, (start, end) in enumerate(
+        zip(image_points, image_points[1:])
+    ):
+        progress = i / max(segment_count - 1, 1)
+
+        # Положение в палитре: от 0 до 2 для трёх цветов
+        position = progress * (len(colors) - 1)
+        color_index = min(int(position), len(colors) - 2)
+        t = position - color_index
+
+        color = lerp_color(
+            colors[color_index],
+            colors[color_index + 1],
+            t,
+        )
+
+        draw.line([start, end], fill=color, width=2)
+        
     image.save(output_path)
 
 
