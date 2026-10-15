@@ -1,21 +1,7 @@
 import random
 from PIL import Image, ImageDraw, ImageColor
 from pathlib import Path
-
-
-directions = [
-    (1, 0),  # вправо
-    (-1, 0), # влево
-    (0, 1),  # вниз
-    (0, -1)  # вверх
-]
-
-PALETTES = [
-    ("#7353FF", "#B36BFF", "#45D9EF"),  # фиолетовый → голубой
-    ("#154D71", "#33A1CC", "#7FFFD4"),  # синий → мятный
-    ("#A73D72", "#EF709D", "#FFD3A5"),  # розовый → персиковый
-    ("#236B58", "#62B885", "#D5E8A0"),  # зелёный → светлый
-]
+import config
 
 
 def generate_walk(steps: int) -> list[tuple[int, int]]:
@@ -23,7 +9,7 @@ def generate_walk(steps: int) -> list[tuple[int, int]]:
     result = [(x, y)]
 
     for _ in range(steps):
-        dx, dy = random.choice(directions)
+        dx, dy = random.choice(config.DIRECTIONS)
         x += dx
         y += dy
         result.append((x, y))
@@ -43,9 +29,9 @@ def lerp_color(
 
 
 def generate_wallpaper(output_path: Path):
-    steps = random.randint(10000, 30000)
+    steps = random.randint(config.MIN_STEPS, config.MAX_STEPS)
     points = generate_walk(steps)
-    palette = random.choice(PALETTES)
+    palette = random.choice(config.PALETTES)
 
     # Границы
     min_x = min(x for x, y in points)
@@ -57,16 +43,13 @@ def generate_wallpaper(output_path: Path):
     walk_height = max_y - min_y
 
     # Масштаб
-    width, height = 1920, 1080
-    padding = 150
-
     scale = min(
-        (width - 2 * padding) / max(walk_width, 1),
-        (height - 2 * padding) / max(walk_height, 1),
+        (config.WIDTH - 2 * config.PADDING) / max(walk_width, 1),
+        (config.HEIGHT - 2 * config.PADDING) / max(walk_height, 1),
     )
 
-    offset_x = (width - walk_width * scale) / 2
-    offset_y = (height - walk_height * scale) / 2
+    offset_x = (config.WIDTH - walk_width * scale) / 2
+    offset_y = (config.HEIGHT - walk_height * scale) / 2
 
     image_points = [
         (
@@ -76,7 +59,11 @@ def generate_wallpaper(output_path: Path):
         for x, y in points
     ]
 
-    image = Image.new("RGB", (width, height), color="#151820")
+    image = Image.new(
+        "RGB",
+        (config.WIDTH, config.HEIGHT),
+        color=config.BACKGROUND_COLOR,
+    )
     draw = ImageDraw.Draw(image)
 
     colors = [ImageColor.getrgb(color) for color in palette]
@@ -98,16 +85,16 @@ def generate_wallpaper(output_path: Path):
             t,
         )
 
-        draw.line([start, end], fill=color, width=2)
+        draw.line([start, end], fill=color, width=config.LINE_WIDTH)
         
     image.save(output_path)
 
 
 def main():
-    output_dir = Path("img")
+    output_dir = Path(config.OUTPUT_DIR)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    for i in range(10):
+    for i in range(config.IMAGE_COUNT):
         output_path = output_dir / f"wallpaper_{i + 1:03d}.png"
         generate_wallpaper(output_path)
         print(f"Сохранено: {output_path}")
