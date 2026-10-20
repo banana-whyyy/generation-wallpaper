@@ -1,3 +1,5 @@
+import math
+
 WIDTH = 1920
 HEIGHT = 1080
 PADDING = 150
@@ -6,7 +8,7 @@ BACKGROUND_COLOR = "#151820"
 LINE_WIDTH = 2
 
 MIN_STEPS = 10_000
-MAX_STEPS = 30_000
+MAX_STEPS = 15_000
 IMAGE_COUNT = 10
 OUTPUT_DIR = "img"
 
@@ -16,6 +18,17 @@ DIRECTIONS = (
     (0, 1),
     (0, -1),
 )
+
+
+TRIANGULAR_DIRECTIONS = (
+    (1, 0),
+    (-1, 0),
+    (0.5, math.sqrt(3) / 2),
+    (-0.5, math.sqrt(3) / 2),
+    (0.5, -math.sqrt(3) / 2),
+    (-0.5, -math.sqrt(3) / 2),
+)
+
 
 PALETTES = (
     ("#7353FF", "#B36BFF", "#45D9EF"),

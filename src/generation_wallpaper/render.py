@@ -1,6 +1,5 @@
 import random
 from . import config
-from .patterns import generate_walk
 
 from PIL import Image, ImageDraw, ImageColor
 from pathlib import Path
@@ -17,9 +16,10 @@ def lerp_color(
     )
 
 
-def render_wallpaper(output_path: Path):
-    steps = random.randint(config.MIN_STEPS, config.MAX_STEPS)
-    points = generate_walk(steps)
+def render_wallpaper(
+    points: list[tuple[float, float]],
+    output_path: Path,
+) -> None:
     palette = random.choice(config.PALETTES)
 
     # Границы
