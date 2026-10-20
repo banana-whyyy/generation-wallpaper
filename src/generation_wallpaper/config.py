@@ -7,8 +7,14 @@ PADDING = 150
 BACKGROUND_COLOR = "#151820"
 LINE_WIDTH = 2
 
-MIN_STEPS = 10_000
-MAX_STEPS = 15_000
+STEP_RANGES = {
+    "rectangular": (10_000, 30_000),
+    "triangular": (3_000, 10_000),
+    "circular": (500, 1_500),
+}
+
+PATTERN = "triangular"
+
 IMAGE_COUNT = 10
 OUTPUT_DIR = "img"
 

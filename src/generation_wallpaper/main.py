@@ -1,5 +1,5 @@
 from .render import render_wallpaper
-from .patterns import generate_walk
+from .patterns import generate_pattern
 import random
 from . import config
 
@@ -14,8 +14,12 @@ def main():
 
     for i in range(config.IMAGE_COUNT):
         output_path = output_dir / f"wallpaper_{i + 1:03d}.png"
-        steps = random.randint(config.MIN_STEPS, config.MAX_STEPS)
-        points = generate_walk(steps, config.TRIANGULAR_DIRECTIONS)
+        pattern = random.choice(tuple(config.STEP_RANGES))
+        min_steps, max_steps = config.STEP_RANGES[pattern]
+        steps = random.randint(min_steps, max_steps)
+
+        points = generate_pattern(pattern, steps)
+        points = generate_pattern(pattern, steps)
         render_wallpaper(points, output_path)
         print(f"Сохранено: {output_path}")
 
