@@ -20,7 +20,7 @@ def render_wallpaper(
     points: list[tuple[float, float]],
     output_path: Path,
 ) -> None:
-    palette = random.choice(config.PALETTES)
+    theme = random.choice(config.THEMES)
 
     # Границы
     min_x = min(x for x, y in points)
@@ -51,11 +51,14 @@ def render_wallpaper(
     image = Image.new(
         "RGB",
         (config.WIDTH, config.HEIGHT),
-        color=config.BACKGROUND_COLOR,
+        color=theme["background"],
     )
     draw = ImageDraw.Draw(image)
 
-    colors = [ImageColor.getrgb(color) for color in palette]
+    colors = [
+        ImageColor.getrgb(color)
+        for color in theme["colors"]
+    ]
     segment_count = len(image_points) - 1
 
     for i, (start, end) in enumerate(

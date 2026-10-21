@@ -4,7 +4,6 @@ WIDTH = 1920
 HEIGHT = 1080
 PADDING = 150
 
-BACKGROUND_COLOR = "#151820"
 LINE_WIDTH = 2
 
 STEP_RANGES = {
@@ -36,9 +35,33 @@ TRIANGULAR_DIRECTIONS = (
 )
 
 
-PALETTES = (
-    ("#7353FF", "#B36BFF", "#45D9EF"),
-    ("#154D71", "#33A1CC", "#7FFFD4"),
-    ("#A73D72", "#EF709D", "#FFD3A5"),
-    ("#236B58", "#62B885", "#D5E8A0"),
+THEMES = (
+    {
+        "background": "#151820",
+        "colors": ("#7353FF", "#B36BFF", "#45D9EF"),
+    },
+    {
+        "background": "#101B24",
+        "colors": ("#154D71", "#33A1CC", "#7FFFD4"),
+    },
+    {
+        "background": "#21151F",
+        "colors": ("#A73D72", "#EF709D", "#FFD3A5"),
+    },
+    {
+        "background": "#101C19",
+        "colors": ("#236B58", "#62B885", "#D5E8A0"),
+    },
+    {
+        "background": "#43302E",
+        "colors": ("#FFF1B5", "#C1DBE8"),
+    },
+    {
+        "background": "#5C1E1F",
+        "colors": ("#EFEAD4", "#677178"),
+    },
+    {
+        "background": "#E2DBCC",
+        "colors": ("#9E2C44", "#0F748D"),
+    },
 )
