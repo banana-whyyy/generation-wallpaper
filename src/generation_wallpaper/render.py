@@ -31,14 +31,19 @@ def render_wallpaper(
     walk_width = max_x - min_x
     walk_height = max_y - min_y
 
+    factor = config.SUPERSAMPLING
+    render_width = config.WIDTH * factor
+    render_height = config.HEIGHT * factor
+    padding = config.PADDING * factor
+
     # Масштаб
     scale = min(
-        (config.WIDTH - 2 * config.PADDING) / max(walk_width, 1),
-        (config.HEIGHT - 2 * config.PADDING) / max(walk_height, 1),
+        (render_width - 2 * padding) / max(walk_width, 1),
+        (render_height - 2 * padding) / max(walk_height, 1),
     )
 
-    offset_x = (config.WIDTH - walk_width * scale) / 2
-    offset_y = (config.HEIGHT - walk_height * scale) / 2
+    offset_x = (render_width - walk_width * scale) / 2
+    offset_y = (render_height - walk_height * scale) / 2
 
     image_points = [
         (
@@ -50,7 +55,7 @@ def render_wallpaper(
 
     image = Image.new(
         "RGB",
-        (config.WIDTH, config.HEIGHT),
+        (render_width, render_height),
         color=theme["background"],
     )
     draw = ImageDraw.Draw(image)
@@ -77,6 +82,15 @@ def render_wallpaper(
             t,
         )
 
-        draw.line([start, end], fill=color, width=config.LINE_WIDTH)
+        draw.line(
+            [start, end],
+            fill=color,
+            width=config.LINE_WIDTH * factor,
+        )
+
+    image = image.resize(
+        (config.WIDTH, config.HEIGHT),
+        resample=Image.Resampling.LANCZOS,
+    )
         
     image.save(output_path)
